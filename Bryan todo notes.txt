@@ -1,0 +1,31 @@
+Notes from Jesse Harris to Bryan Li
+June 29, 2016
+
+================
+
+Work flow. There are three folders that capture the three steps of the process as they currently stand.
+
+-------------------
+1. Scrape for links
+This is the part I've had the hardest time with. It should scrape npr.org with a Scrapy spider, and download the results to a txt file. After I wrote it initially, Scrapy was updated and the program broke. An undergraduate RA, Shayna Lurya, seems to have fixed most of it, but it could still probably use some work. We only capture links with the base "http://www.npr.org/templates/transcript/transcript.php?storyId=" because these seem to hold the transcripts with a corresponding audio file.
+
+-------------------
+2. Download and format
+So far, this program seems to work as intended. It creates an XML directory given a txt file with links to NPR transcripts. It has a few options that are discussed in the program itself.
+
+-------------------
+3. Search
+I'm essentially happy with these tools as they stand. The npr-search.py program uses the optional commands.txt file to specify the core variables: the path to the directory, the output csv file, and the regular expression to search for. It may also be run with a verbose flag '--v'. If the commands.txt file is not specified, each of the core variables must be specified either at the command prompt, or when prompted by the program.
+
+
+===============
+
+Todos (as far as you can get):
+
+1. See if the web crawler can be optimized. It's pretty slow as is.
+2. See if we can compress steps 1 and 2 into a single step.
+3. Find out whether the API supplied by NPR can be used for our purposes and modify scripts accordingly.
+4. Try to expand out from NPR. Each news site will probably have its own idiosyncratic HTML tags that will require tweaking of the program.
+5. Create a standalone web version, if possible. There could be a few options: one basic option that includes a core set of pre-downloaded transcripts, say 10,000 transcripts, that users can use for regexp searches, and another that allows users to create a database with only transcripts matching the regular expression..
+6. Once the work flow is finalized, create better documentation, a README.md file, and a little tutorial on how to use the program(s).
+

@@ -1,0 +1,5 @@
+# path = '/Users/jesse/Documents/Corpora/NPR/Shayna/NPRfiles/'
+path = '../2. Download and format/NPRxml/'
+filename = 'npr_search.csv'
+regexin = r'don\'t know why'
+
