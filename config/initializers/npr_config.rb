@@ -1,5 +1,5 @@
 NPR.configure do |config|
-  config.apiKey = "MDEwNjQyNzU3MDEzNTY3MTI3MzM5ZjUxNg001" # Codecademy API key, use own asap!
+  config.apiKey = 'MDI1MjUwMjczMDE0NjkwMzY2OTU3YWFlMw000' # for account b.li@columbia.edu
   config.sort = 'date descending'
   config.requiredAssets = 'text'
 end
