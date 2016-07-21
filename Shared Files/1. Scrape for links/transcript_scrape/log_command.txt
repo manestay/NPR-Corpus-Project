@@ -1,0 +1,1 @@
+  scrapy crawl npr 2>&1 | tee -a log.txt

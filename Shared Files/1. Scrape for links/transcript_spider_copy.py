@@ -25,9 +25,9 @@ class TranscriptSpider(CrawlSpider):
     #If not, scrapes all URLs from response URL
     
       if response.url.startswith(base):
-            if response.url not in trans_set:
-                trans_set.add(response.url)
-                print current_url
+        if response.url not in trans_set:
+            trans_set.add(response.url)
+            print current_url
         
         
         
