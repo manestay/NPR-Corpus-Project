@@ -1,0 +1,35 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Transcripts</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Date</th>
+      <th>Story link</th>
+      <th>Audio link</th>
+      <th>Text</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @transcripts.each do |transcript| %>
+      <tr>
+        <td><%= transcript.title %></td>
+        <td><%= transcript.date %></td>
+        <td><%= transcript.story_link %></td>
+        <td><%= transcript.audio_link %></td>
+        <td><%= transcript.text %></td>
+        <td><%= link_to 'Show', transcript %></td>
+        <td><%= link_to 'Edit', edit_transcript_path(transcript) %></td>
+        <td><%= link_to 'Destroy', transcript, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Transcript', new_transcript_path %>

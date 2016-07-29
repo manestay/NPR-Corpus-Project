@@ -1,0 +1,37 @@
+<%= form_for(@transcript) do |f| %>
+  <% if @transcript.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@transcript.errors.count, "error") %> prohibited this transcript from being saved:</h2>
+
+      <ul>
+      <% @transcript.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :title %><br>
+    <%= f.text_field :title %>
+  </div>
+  <div class="field">
+    <%= f.label :date %><br>
+    <%= f.text_field :date %>
+  </div>
+  <div class="field">
+    <%= f.label :story_link %><br>
+    <%= f.text_field :story_link %>
+  </div>
+  <div class="field">
+    <%= f.label :audio_link %><br>
+    <%= f.text_field :audio_link %>
+  </div>
+  <div class="field">
+    <%= f.label :text %><br>
+    <%= f.text_field :text %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
