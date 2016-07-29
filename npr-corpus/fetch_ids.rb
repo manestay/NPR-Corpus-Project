@@ -21,7 +21,7 @@ class IdScraper
           endDate: time_string(date_index),
           startNum: skip,
           sort: 'dateAsc'
-         )
+        )
         batch = response.list.stories
         add_transcript_ids_for batch
         if batch.size == 50 # still more to process
