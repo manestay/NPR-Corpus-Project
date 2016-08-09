@@ -1,5 +1,7 @@
 class IdsToDb
-  require 'xmlsimple'
+  API_KEY = ENV['NPR_API_KEY']
+  
+  attr_reader :array, :file_name
   
   def initialize(client, file_name)
     @client = client
@@ -7,33 +9,69 @@ class IdsToDb
   end
 
   def array_from_id_file
-    array = []
+	return @array if @array
+    @array = []
     File.open(@file_name, 'rb').readlines.each do |line|
-      array.push(*line.split(" "))
+      @array.push(*line.split(" "))
     end
-    array
+    @array
   end
   
-  def generate_xml
+  def write_to_database
     ids = array_from_id_file
-    api_key = NPR.config.apiKey
+    count = 0
     ids.each do |id|
-      uri = URI.parse("http://api.npr.org/transcript?id=#{id}&apiKey=#{api_key}")
-      xml_data = Net::HTTP.get_response(uri).body
-      xml_hash = XmlSimple.xml_in(xml_data)
-      array = get_date_and_audio_link(id)
-      transcript = Transcript.new(story_id: id, audio_link: array.last, date: array.first, paragraphs: xml_hash['paragraph'])
-      transcript.save!
+      if Transcript.where(story_id: id).first.nil?
+        xml = parse_xml(id)
+        paragraphs = xml['paragraph'].map(&:squish)
+        array = get_title_date_and_audio_link(id)
+        puts "Adding story #{id}"
+        
+        transcript = Transcript.new(
+          story_id: id,
+          title: array.first,
+          date: array.second,
+          url_link: xml['story']['link'].first,
+          audio_link: array.third,
+          paragraphs: paragraphs
+        )
+        transcript.save!
+        count += 1
+      else
+        puts "Story #{id} was already in database, not modified"
+      end
     end
+    puts "Added #{count} transcripts to database"
   end
   
-  def get_date_and_audio_link(id)
+  def parse_xml(id)
+      uri = URI.parse("http://api.npr.org/transcript?id=#{id}&apiKey=#{API_KEY}")
+      xml_data = Net::HTTP.get_response(uri).body
+      Hash.from_xml(xml_data)['transcript']
+  end
+  
+  def get_title_date_and_audio_link(id)
     story = @client.query(
-      fields: 'storyDate,audio',
+      fields: 'title,storyDate,audio',
       id: id
     ).list.stories.first
+    
+    title = story.title
     date = story.storyDate
-    audio_link = story.audio.first.instance_variable_get("@formats").mp3s.first.content + '&dl=1'
-    return [date, audio_link]
+    audio_link = get_audio_link(story.audio)
+    Rails.logger.error "Audio not found for #{id}" if audio_link.nil?
+    [title, date, audio_link]
+  end
+  
+  def get_audio_link(audio_array)
+    case audio_array.size
+    when 0
+      nil
+    when 1
+      audio_array.first.formats.mp3s.first.content + '&dl=1' rescue nil
+    else
+      index = audio_array.map(&:type).index('primary')
+      audio_array[index].formats.mp3s.first.content.sub(/\?.*/, "?dl=1") rescue nil
+    end
   end
 end

@@ -66,7 +66,3 @@ class IdScraper
      end
   end
 end
-
-client = NPR::API::Client.new
-scrape = IdScraper.new(client, start_date: Time.new(2007,04,18), duration: 9.years)
-scrape.run
