@@ -1,14 +1,15 @@
 class IdScraper
   attr_reader :story_ids
-  
-  def initialize(client, start_date: Time.new(2006,01,01),  duration: 1.year)
+
+  def initialize(client, start_date: Date.new(2006, 1, 1),
+                 end_date: nil, duration: nil, file_name: nil)
     @client = client
     @start_date = start_date
-    @duration = duration
-    @end_date = start_date + duration
+    @end_date = set_end_date(end_date, duration)
+    @file_name = file_name
     @story_ids = []
   end
-  
+
   def run
     skip = 0
     date_index = @start_date
@@ -17,8 +18,8 @@ class IdScraper
         response = @client.query(
           fields: 'transcript,storyDate',
           numResults: '50',
-          startDate: time_string(date_index),
-          endDate: time_string(date_index),
+          startDate: date_index.to_s,
+          endDate: date_index.to_s,
           startNum: skip,
           sort: 'dateAsc'
         )
@@ -28,41 +29,56 @@ class IdScraper
           skip += 50
         else
           skip = 0
-          puts "finished  #{time_string(date_index)}"
+          puts "finished #{date_index.to_date}"
           date_index += 1.day
           sleep(1)
         end
       rescue NPR::APIError
-        ::Rails.logger.error("There was an API error for #{time_string date_index}\n")
-          date_index += 1.day
+        Rails.logger.error("There was an API error for #{date_index}\n")
+        date_index += 1.day
       rescue NoMethodError
-        ::Rails.logger.error("There was a no method error for #{time_string date_index}\n")
-          date_index += 1.day
+        Rails.logger.error("There was a no method error for #{date_index}\n")
+        date_index += 1.day
       end
     end
   ensure
-     puts "done finding #{@story_ids.size} transcripts for #{time_string @start_date} to  #{time_string @end_date} "
-     write_to_file if @story_ids.presence
+    date_index -= 1.day
+    puts "found #{@story_ids.size} transcripts from #{@start_date.to_date}" \
+    " to #{date_index.to_date}"
+    write_to_file(date_index) if @story_ids.presence
   end
-  
-  def add_transcript_ids_for(stories)    
+
+  def add_transcript_ids_for(stories)
     stories.each do |story|
-      if story.transcript
+      next unless story.transcript
+
+      if @story_ids.exclude? story.id
         @story_ids << story.id
-        puts "added #{story.id}, #{time_string(story.storyDate)}"
+        puts "added #{story.id}, #{story.storyDate}"
+      else
+        puts "#{story.id} already scraped"
       end
     end
-  end  
-  
-  def time_string(time)
-      time.strftime('%Y-%m-%d') 
   end
-  
+
   private
-  
-  def write_to_file
-    File.open("ids-#{Time.now.strftime('%s')}.txt", 'ab') do |f|
-      @story_ids.each { |id| f << "#{id} "}
-     end
+
+  def set_end_date(end_date, duration)
+    return end_date if end_date
+
+    return @start_date + duration if duration
+
+    Date.current
+  end
+
+  def write_to_file(date_index)
+    File.open(file_name(date_index), 'ab') do |f|
+      @story_ids.each { |id| f << "#{id} " }
+    end
+  end
+
+  def file_name(date_index)
+    return @file_name if @file_name
+    "ids-#{@start_date.to_date}-to-#{date_index.to_date}.txt"
   end
 end
