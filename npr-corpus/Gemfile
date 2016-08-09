@@ -44,6 +44,7 @@ group :development do
 end
 
 gem 'npr'
-gem 'xml-simple'
 
 gem 'mongoid', git: 'git://github.com/mongoid/mongoid.git'
+
+gem 'dotenv-rails'
