@@ -66,14 +66,16 @@ class IdsToDb
   def get_audio_link(audio_array)
     case audio_array.size
     when 0
-      nil
+      return
     when 1
       mp3 = audio_array.first.formats.mp3s.first
-      return nil unless mp3
+      return unless mp3
       mp3.content.sub(/\?.*/, '?dl=1')
     else
       index = audio_array.map(&:type).index('primary')
+      return unless index
       mp3 = audio_array[index].formats.mp3s.first
+      return unless mp3
       mp3.content.sub(/\?.*/, '?dl=1')
     end
   end

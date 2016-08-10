@@ -8,7 +8,9 @@
 /.bundle
 
 # Ignore all logfiles and tempfiles.
-/log/*
-!/log/.keep
-/tmp
-/save
+npr-corpus/log/*
+!npr-corpus/log/.keep
+npr-corpus/tmp
+npr-corpus/save
+data/*
+mongod

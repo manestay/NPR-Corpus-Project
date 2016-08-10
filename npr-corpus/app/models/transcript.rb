@@ -5,7 +5,7 @@ class Transcript
 
   field :story_id, type: String
   field :title, type: String
-  field :date, type: Date
+  field :date, type: DateTime
   field :url_link, type: String
   field :audio_link, type: String
   field :paragraphs, type: Array

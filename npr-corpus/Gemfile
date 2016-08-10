@@ -45,6 +45,8 @@ end
 
 gem 'npr'
 
-gem 'mongoid', git: 'git://github.com/mongoid/mongoid.git'
+gem 'mongoid', '~> 5.1.0'
 
 gem 'dotenv-rails'
+
+gem 'rubocop'
