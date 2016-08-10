@@ -1,4 +1,4 @@
-class IdScraper
+class FetchIds
   attr_reader :story_ids
 
   def initialize(client, start_date: Date.new(2006, 1, 1),
