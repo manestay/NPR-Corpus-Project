@@ -21,6 +21,7 @@
   load "#{Rails.root}/fetch_ids.rb"
   load "#{Rails.root}/ids_to_db.rb"
   load "#{Rails.root}/db_to_xml.rb"
+  load "#{Rails.root}/search_database.rb"
     # load these files into the console
 
 # Fetch IDs from NPR

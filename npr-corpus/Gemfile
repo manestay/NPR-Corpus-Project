@@ -50,3 +50,5 @@ gem 'mongoid', '~> 5.1.0'
 gem 'dotenv-rails'
 
 gem 'rubocop'
+
+gem 'tactful_tokenizer'
