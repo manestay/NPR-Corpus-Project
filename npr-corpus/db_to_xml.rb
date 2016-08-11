@@ -12,9 +12,9 @@ class DbToXml
   def generate_xml(transcript)
     target =
       if @output_to_stdout
-        '$stdout'
+        STDOUT
       else
-        File.new("#{transcript.title}.xml", 'wb')
+        File.open("#{transcript.title}.xml", 'wb')
       end
 
     xml = Builder::XmlMarkup.new(target: target, indent: 2)
@@ -29,5 +29,8 @@ class DbToXml
         end
       end
     end
+
+    target.close
+    puts "XML written to #{transcript.title}.xml" unless target == STDOUT
   end
 end

@@ -12,14 +12,14 @@ class FetchIds
 
   def run
     skip = 0
-    date_index = @start_date
-    while date_index <= @end_date
+    @date_index = @start_date
+    while @date_index <= @end_date
       begin
         response = @client.query(
           fields: 'transcript,storyDate',
           numResults: '50',
-          startDate: date_index.to_s,
-          endDate: date_index.to_s,
+          startDate: @date_index.to_s,
+          endDate: @date_index.to_s,
           startNum: skip,
           sort: 'dateAsc'
         )
@@ -29,23 +29,28 @@ class FetchIds
           skip += 50
         else
           skip = 0
-          puts "finished #{date_index.to_date}"
-          date_index += 1.day
+          puts "finished #{@date_index.to_date}"
+          @date_index += 1.day
           sleep(1)
         end
       rescue NPR::APIError
         Rails.logger.error("There was an API error for #{date_index}\n")
-        date_index += 1.day
+        @date_index += 1.day
       rescue NoMethodError
         Rails.logger.error("There was a no method error for #{date_index}\n")
-        date_index += 1.day
+        @date_index += 1.day
       end
     end
-  ensure
-    date_index -= 1.day
+
+    @date_index -= 1.day # reset date to past
+  end
+
+  def export
+    return unless @story_ids.presence
+
     puts "found #{@story_ids.size} transcripts from #{@start_date.to_date}" \
-    " to #{date_index.to_date}"
-    write_to_file(date_index) if @story_ids.presence
+    " to #{@date_index.to_date}"
+    write_to_file
   end
 
   def add_transcript_ids_for(stories)
@@ -71,14 +76,14 @@ class FetchIds
     Date.current
   end
 
-  def write_to_file(date_index)
-    File.open(file_name(date_index), 'ab') do |f|
+  def write_to_file
+    File.open(file_name, 'ab') do |f|
       @story_ids.each { |id| f << "#{id} " }
     end
   end
 
-  def file_name(date_index)
+  def file_name
     return @file_name if @file_name
-    "ids-#{@start_date.to_date}-to-#{date_index.to_date}.txt"
+    "ids-#{@start_date.to_date}-to-#{@date_index.to_date}.txt"
   end
 end

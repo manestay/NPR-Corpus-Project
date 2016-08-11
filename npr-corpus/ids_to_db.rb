@@ -1,51 +1,60 @@
 class IdsToDb
-  API_KEY = ENV['NPR_API_KEY']
+  attr_reader :array
 
-  attr_reader :array, :file_name
-
-  def initialize(client, file_name)
+  def initialize(client)
     @client = client
-    @file_name = file_name
   end
 
-  def array_from_id_file
+  def parse_file(file_name)
     return @array if @array
     @array = []
-    File.open(@file_name, 'rb').readlines.each do |line|
+    File.open(file_name, 'rb').readlines.each do |line|
       @array.concat(line.split(' '))
     end
     @array
   end
 
-  def write_to_database
-    ids = array_from_id_file
+  def write_id(id)
+    if Transcript.where(story_id: id).first
+      puts "Story #{id} already exists, not modified"
+      return
+    end
+
+    xml = parse_xml(id)
+    if xml.nil?
+      puts "Story #{id} not found"
+      return
+    end
+
+    title, date, audio = get_title_date_and_audio_link(id)
+
+    fields = {
+      story_id: id,
+      title: title,
+      date: date,
+      url_link: xml['story']['link'],
+      audio_link: audio,
+      paragraphs: xml['paragraph'].map(&:squish)
+    }
+
+    puts "Adding story #{id}"
+    Transcript.create(fields)
+  end
+
+  def write_ids(ids = @array)
+    ids ||= parse_file
     count = 0
     ids.each do |id|
-      if Transcript.where(story_id: id).first.nil?
-        xml = parse_xml(id)
-        paragraphs = xml['paragraph'].map(&:squish)
-        array = get_title_date_and_audio_link(id)
-        puts "Adding story #{id}"
-
-        transcript = Transcript.new(
-          story_id: id,
-          title: array.first,
-          date: array.second,
-          url_link: xml['story']['link'].first,
-          audio_link: array.third,
-          paragraphs: paragraphs
-        )
-        transcript.save!
-        count += 1
-      else
-        puts "Story #{id} was already in database, not modified"
-      end
+      written = write_id(id)
+      count += 1 if written
     end
     puts "Added #{count} transcripts to database"
   end
 
+  protected
+
   def parse_xml(id)
-    uri = URI.parse("http://api.npr.org/transcript?id=#{id}&apiKey=#{API_KEY}")
+    uri = URI.parse("http://api.npr.org/transcript?id=#{id}&apiKey=#{ENV['NPR_API_KEY']}")
     xml_data = Net::HTTP.get_response(uri).body
     Hash.from_xml(xml_data)['transcript']
   end

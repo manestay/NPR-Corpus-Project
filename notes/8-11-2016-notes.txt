@@ -1,0 +1,11 @@
+August 11, 2016 Notes
+
+Todos from last meeting:
+
+* Write documentation for command line  | ✓
+* On virtual machine; fix database      | ✓
+* Populate database                     | ✓ c9 has ~2.6k transcripts, local machine has more
+* Form XML option                       | ✓ db_to_xml.rb
+* Search function                       | WIP
+* CSV / Dynamically generated webpage   |
+* Design                                | WIP

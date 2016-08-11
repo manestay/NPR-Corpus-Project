@@ -1,0 +1,83 @@
+# To use this file copy and paste the sections you want to run into the
+# terminal. Lines starting with # are commented out and do not execute, so it's
+# fine to paste them along with the actual code.
+# Accurate as of 8-10-2016
+
+# Start command line interface, the rails console
+# In any terminal (alt+t to open a new one) window
+  cd ~/workspace/npr-corpus/
+  rails console
+
+# Start mongo service in another terminal
+  cd ~/workspace
+  ./mongod
+  # If error, run `./mongod --repair` before ./mongod
+
+# Initialize environment
+  @client = NPR::API::Client.new
+    # returns a new NPRClient object to allow us to query API programmatically
+  @file_name = "#{Rails.root}/save/ids.txt"
+    # example @file_name, modify as needed
+  load "#{Rails.root}/fetch_ids.rb"
+  load "#{Rails.root}/ids_to_db.rb"
+  load "#{Rails.root}/db_to_xml.rb"
+    # load these files into the console
+
+# Fetch IDs from NPR
+  fetcher = FetchIds.new(@client)
+    # With default parameters
+##fetcher = FetchIds.new(@client, start_date: ~, end_date: ~, duration: ~, file_name: ~)
+    # replace ~ with following examples
+    # start_date: Date.new(2016, 8, 1) | Date.new(yyyy, mm, dd)
+    # end_date: Date.new(yyyy, mm, dd)
+    # duration: 1.week | 1.day | 1.month | 1.year (use either end_date or duration, not both)
+    # file_name: "some-file-name.txt" (if not given, uses default one)
+  fetcher.run
+    # Querying API, 50 stories at a time from start_date to end_date (or for duration).
+    # Will add ids of stories with a transcript associated with them
+    # ctrl+c to stop the query
+  fetcher.export
+    # writes the array fetcher.story_ids to a file set by file_name
+
+# Write IDs into the database
+  writer = IdsToDb.new(@client)
+    # where @file_name is the file_name to read IDs from
+  array = writer.parse_file(@file_name)
+  writer.write_ids(array)
+    # array of ids can be given directly as well
+##writer.write_id(SOME_ID)
+    # to write a NPR Story ID directly to MongoDB
+
+# View the MongoDB
+  Transcript.count
+  Transcript.first
+    # returns the document itself from the database
+  Transcript.last
+    # note only first and last work, can't access any other index directly
+
+  Transcript.where(story_id: ID)
+    # .where (as well as `.find`, `.find_by`) returns a query of matching documents
+  Transcript.where(title: ID).first
+    # .first gets first document itself
+    # "" for string, // for regex
+  Transcript.pluck(:title)
+    # this returns an array of all titles of transcripts
+
+# View a specific transcript document
+  transcript = Transcript.first
+  puts transcript.to_yaml
+    # prints the fields in a transcript cleanly
+  transcript.title
+    # returns the title as a string
+  transcript.paragraphs
+    # returns the paragraphs as an array of strings
+
+# Generate an XML file for a transcript in the database
+  generator = DbToXml.new
+    # generate XML and save to a file
+  generator.generate_xml(Transcript.first)
+    # file_name is "#{transcript.title}.xml"
+##generator = DbToXml.new(true)
+    # generate XML and don't save to a file
+##puts generator.generate_xml(Transcript.first)
+    # prints the XML into the console
