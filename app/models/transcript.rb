@@ -10,6 +10,8 @@ class Transcript
   field :audio_link, type: String
   field :paragraphs, type: Array
 
+  index({ story_id: 1 }, { unique: true })
+
   def api_link
     "http://api.npr.org/transcript?id=#{story_id}&apiKey=#{ENV['NPR_API_KEY']}"
   end
