@@ -16,7 +16,6 @@
 # Initialize environment
   @client = NPR::API::Client.new
     # returns a new NPRClient object to allow us to query API programmatically
-  @file_name = "#{Rails.root}/save/ids.txt"
     # example @file_name, modify as needed
   load "#{Rails.root}/fetch_ids.rb"
   load "#{Rails.root}/ids_to_db.rb"
@@ -41,6 +40,7 @@
     # writes the array fetcher.story_ids to a file set by file_name
 
 # Write IDs into the database
+  @file_name = "#{Rails.root}/save/ids.txt"
   writer = IdsToDb.new(@client)
     # where @file_name is the file_name to read IDs from
   array = writer.parse_file(@file_name)
@@ -82,3 +82,11 @@
     # generate XML and don't save to a file
 ##puts generator.generate_xml(Transcript.first)
     # prints the XML into the console
+
+# search the database for a phrase
+  tokenizer = TactfulTokenizer::Model.new
+    # train the tokenizer
+  searcher = SearchDatabase.new(tokenizer)
+    # initialize searcher
+  searcher.search("I don't know")
+    # search for phrase

@@ -1,8 +1,8 @@
 class FetchIds
   attr_reader :story_ids
 
-  def initialize(client, start_date: Date.new(2006, 1, 1),
-                 end_date: nil, duration: nil, file_name: nil)
+  def initialize(client, start_date: 2.days.ago,
+                 end_date: nil, duration: 1.day, file_name: nil)
     @client = client
     @start_date = start_date
     @end_date = set_end_date(end_date, duration)
@@ -24,7 +24,7 @@ class FetchIds
           sort: 'dateAsc'
         )
         batch = response.list.stories
-        add_transcript_ids_for batch
+        add_transcript_ids_for(batch)
         if batch.size == 50 # still more to process
           skip += 50
         else
