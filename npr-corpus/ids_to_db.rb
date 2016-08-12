@@ -32,9 +32,9 @@ class IdsToDb
       story_id: id,
       title: title,
       date: date,
-      url_link: xml['story']['link'],
+      url_link: xml['story']['link'].first,
       audio_link: audio,
-      paragraphs: xml['paragraph'].map(&:squish)
+      paragraphs: get_paragraphs(xml)
     }
 
     puts "Adding story #{id}"
@@ -87,5 +87,11 @@ class IdsToDb
       return unless mp3
       mp3.content.sub(/\?.*/, '?dl=1')
     end
+  end
+
+  def get_paragraphs(xml)
+    paragraphs = xml['paragraph']
+    return paragraphs.map(&:squish) if paragraphs.is_a? Array
+    [paragraphs.squish] # only 1 paragraph
   end
 end

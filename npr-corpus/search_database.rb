@@ -2,7 +2,7 @@ require 'tactful_tokenizer'
 require 'csv'
 
 class SearchDatabase
-  def initialize(tokenizer = nil, verbose: false)
+  def initialize(tokenizer = nil, verbose: true)
     @verbose = verbose
     puts 'training tokenizer...'
     @m = tokenizer || TactfulTokenizer::Model.new
@@ -22,6 +22,14 @@ class SearchDatabase
         follow1 = get_follow1(phrase, paragraphs, i)
         follow2 = get_follow2(phrase, paragraphs, i)
         sentence = get_sentence(phrase, paragraph)
+
+        # do not write if there was an error
+        if [context, follow1, follow2, sentence].include? nil
+          Rails.logger.error("#search error: story_id #{transcript.id} " \
+          "paragraph ##{i}, phrase #{phrase}")
+          next
+        end
+
         hit = [
           hits,
           transcript.title,
@@ -41,8 +49,15 @@ class SearchDatabase
     hit_array
   end
 
-  def generate_csv(hit_array, file_name: nil)
-    phrase = hit_array.first[:phrase] rescue 'phrase'
+  def generate_csv(array, file_name: nil)
+    if array.first.is_a? Hash # strip metadata from array and set phrase
+      phrase_hash, *hit_array = array
+      phrase = phrase_hash[:phrase]
+    else # array has no metadata, set phrase to default
+      hit_array = array
+      phrase = 'phrase'
+    end
+
     file_name ||= "results-#{phrase}.csv"
     CSV.open(file_name, "wb") do |csv|
       csv << [
@@ -54,10 +69,13 @@ class SearchDatabase
         'Paragraph',
         'Continuation',
         'Continuation2',
-        'Sentence'
+        'Sentence',
+        "phrase: #{phrase}"
       ]
       hit_array.each { |hit| csv << hit }
     end
+  rescue StandardError => ex
+    puts "There was an error: #{ex}"
   end
 
   private
@@ -80,7 +98,11 @@ class SearchDatabase
   def get_sentence(phrase, paragraph)
     sentences = @m.tokenize_text(paragraph)
     sentences.each do |sentence|
-      return sentence if phrase.in? sentence
+      return sentence if phrase.in? sentence.downcase
     end
+
+    # if no sentence is returned, return nil
+    Rails.logger.error("sentence not found for #{phrase}, #{paragraph}")
+    nil
   end
 end
