@@ -4,7 +4,7 @@ class Transcript
   include Mongoid::Timestamps
 
   field :story_id, type: String
-  field :title, type: String
+  field :title, type: String, default: nil
   field :date, type: DateTime
   field :url_link, type: String
   field :audio_link, type: String

@@ -38,17 +38,19 @@ end
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> in views
   gem 'web-console', '~> 2.0'
+  
+  gem 'rubocop'
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
 end
+
+gem 'bootstrap-sass', '~> 3.3.6'
 
 gem 'npr'
 
 gem 'mongoid', '~> 5.1.0'
 
 gem 'dotenv-rails'
-
-gem 'rubocop'
 
 gem 'tactful_tokenizer'
