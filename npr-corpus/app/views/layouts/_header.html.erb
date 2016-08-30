@@ -1,11 +1,22 @@
 <header class="navbar navbar-fixed-top navbar-inverse">
   <div class="container">
-    <%= link_to "NPR Corpus", '#', id: "logo" %>
+    <%= link_to "NPR Corpus", root_path, id: "logo" %>
     <nav>
+        <% if user_signed_in? %>
+          <p class="navbar-text pull-left"></p>Logged in as <strong><%= current_user.email %></strong>.</p>
+        <% end %>
       <ul class="nav navbar-nav navbar-right">
-        <li><%= link_to "Home", root_path %></li>
-        <li><%= link_to "Help", '#' %></li>
-        <li><%= link_to "Log in", '#' %></li>
+        <li><%= link_to "Home", root_path, :class => 'navbar-link' %></li>
+        <li><%= link_to "Search", query_path, :class => 'navbar-link' %></li>
+
+        <% if user_signed_in? %>
+          <li><%= link_to 'Edit profile', edit_user_registration_path, :class => 'navbar-link' %>
+          <li><%= link_to "Logout", destroy_user_session_path, method: :delete, :class => 'navbar-link'  %>
+        <% else %>
+          <li><%= link_to "Sign up", new_user_registration_path, :class => 'navbar-link'  %>
+          <li><%= link_to "Login", new_user_session_path, :class => 'navbar-link'  %>
+        <% end %>
+        <li><%= link_to "Help", '#', :class => 'navbar-link' %></li>
       </ul>
     </nav>
   </div>

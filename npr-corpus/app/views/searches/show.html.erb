@@ -1,0 +1,12 @@
+<%= "Found #{@search.results.count} hits for the phrase \"#{@search.phrase}\" in
+ #{@search.transcript_count} transcripts." %> <br>
+
+<%= "Showing first 50 results; download CSV for all results" if @limited %>
+<%= table_for @results, :html => {
+  :class => 'table table-bordered table-striped table table-condensed',
+  } do -%>
+  <% columns :title, :url_link, :audio_link, :context, :paragraph, :follow1,
+             :follow2, :sentence %>
+<% end %>
+
+<%= link_to "Download_csv", "/save/results-#{@search.phrase}-#{@search.submitted_at.to_date}.csv" %>

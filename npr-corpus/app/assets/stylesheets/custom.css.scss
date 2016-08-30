@@ -1,10 +1,16 @@
 @import "bootstrap-sprockets";
 @import "bootstrap";
 
+@mixin box_sizing {
+-moz-box-sizing: border-box;
+-webkit-box-sizing: border-box;
+box-sizing: border-box;
+}
+
 /* universal */
 
 body {
-  padding-top: 60px;
+  padding-top: 100px;
 }
 
 section {
@@ -49,6 +55,10 @@ p {
   line-height: 1.7em;
 }
 
+.navbar-text {
+  color: white;
+}
+
 /* header */
 #logo {
   float: left;
@@ -64,3 +74,15 @@ p {
     text-decoration: none;
   }
 }
+
+/* miscellaneous */
+
+.debug_dump {
+  clear: both;
+  float: left;
+  width: 100%;
+  margin-top: 45px;
+  @include box_sizing;
+}
+
+.navbar .container { min-height: 0px; }

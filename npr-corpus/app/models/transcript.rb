@@ -6,11 +6,14 @@ class Transcript
   field :story_id, type: String
   field :title, type: String, default: nil
   field :date, type: DateTime
-  field :url_link, type: String
-  field :audio_link, type: String
-  field :paragraphs, type: Array
+  field :url_link, type: String, default: nil
+  field :audio_link, type: String, default: nil
+  field :paragraphs, type: Array, default: []
 
   index({ story_id: 1 }, { unique: true })
+  index(date: 1)
+
+  validates :story_id, presence: true
 
   def api_link
     "http://api.npr.org/transcript?id=#{story_id}&apiKey=#{ENV['NPR_API_KEY']}"

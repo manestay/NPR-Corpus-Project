@@ -14,3 +14,4 @@ npr-corpus/tmp
 npr-corpus/save
 data/*
 mongod
+npr-corpus/public/CSV/*
