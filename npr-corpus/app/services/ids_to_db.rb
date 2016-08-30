@@ -20,24 +20,25 @@ class IdsToDb
       return
     end
 
-    xml = parse_xml(id)
-    if xml.nil?
+    xml = self.class.parse_xml(id)
+    if xml.nil? # no NPRXML for this story
       puts "Story #{id} not found"
       return
     end
 
     title, date, audio = get_title_date_and_audio_link(id)
+    url_link = get_url_link(xml)
 
     fields = {
       story_id: id,
       title: title,
       date: date,
-      url_link: xml['story']['link'].first,
+      url_link: url_link,
       audio_link: audio,
       paragraphs: get_paragraphs(xml)
     }
 
-    puts "Adding story #{id}"
+    puts "Adding story #{id}, title: #{title}"
     Transcript.create(fields)
   end
 
@@ -48,16 +49,18 @@ class IdsToDb
       written = write_id(id)
       count += 1 if written
     end
+  ensure
     puts "Added #{count} transcripts to database"
   end
 
-  protected
-
-  def parse_xml(id)
+  # class method to return NPRXML in a hash
+  def self.parse_xml(id)
     uri = URI.parse("http://api.npr.org/transcript?id=#{id}&apiKey=#{ENV['NPR_API_KEY']}")
     xml_data = Net::HTTP.get_response(uri).body
     Hash.from_xml(xml_data)['transcript']
   end
+
+  protected
 
   def get_title_date_and_audio_link(id)
     story = @client.query(
@@ -93,5 +96,11 @@ class IdsToDb
     paragraphs = xml['paragraph']
     return paragraphs.map(&:squish) if paragraphs.is_a? Array
     [paragraphs.squish] # only 1 paragraph
+  end
+
+  def get_url_link(xml)
+    url_link = xml['story']['link'].first
+    return url_link unless url_link.is_a? Array
+    url_link.first
   end
 end

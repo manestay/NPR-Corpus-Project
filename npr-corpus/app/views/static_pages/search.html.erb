@@ -1,0 +1,15 @@
+<h2>New Search</h2>
+
+<%= bootstrap_form_for @search do |f| %>
+  <%= f.text_field :phrase %></p>
+
+  <%= f.text_field :limit %></p>
+
+  <%= f.date_field :start_date %></p>
+
+  <%= f.date_field :end_date %></p>
+
+  <%= f.hidden_field :submitted_at, value: DateTime.current %></p>
+
+  <%= f.submit "Search" %>
+<% end %>
