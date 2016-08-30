@@ -56,3 +56,7 @@ gem 'dotenv-rails'
 gem 'tactful_tokenizer'
 
 gem 'devise'
+
+gem 'table_for_collection'
+
+gem 'bootstrap_form'

@@ -11,7 +11,8 @@ class Transcript
   field :paragraphs, type: Array, default: []
 
   index({ story_id: 1 }, { unique: true })
-  
+  index(date: 1)
+
   validates :story_id, presence: true
 
   def api_link
