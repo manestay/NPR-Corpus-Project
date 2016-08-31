@@ -15,4 +15,6 @@ npr-corpus/save
 data/*
 mongod
 npr-corpus/public/csv/*
+!npr-corpus/public/csv
 npr-corpus/.byebug_history
+npr-corpus/.env
