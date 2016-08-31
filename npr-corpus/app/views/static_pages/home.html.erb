@@ -8,8 +8,6 @@
   Currently indexing <%= Transcript.count %> articles from NPR,
   current as of <%= Transcript.order_by(:date.desc).first.date.to_date %>.
   </h2>
-
-  <%= link_to "Sign up now!", new_user_registration_path, class: "btn btn-lg btn-primary" %>
 </div>
 
 <%= link_to image_tag("npr-home.png", alt: "NPR logo"), 'http://npr.org/' %>

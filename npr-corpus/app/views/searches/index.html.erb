@@ -1,0 +1,30 @@
+<p id="notice"><%= notice %></p>
+<% provide(:title, 'Search History') %>
+<h2>Search History</h2>
+
+<table class='table'>
+  <thead>
+    <tr>
+      <th>Phrase</th>
+      <th>Submitted at</th>
+      <th>Start date</th>
+      <th>End date</th>
+      <th>Number of results</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @searches.each do |search| %>
+      <tr>
+        <td><%= search.phrase %></td>
+        <td><%= search.submitted_at.to_time %></td>
+        <td><%= search.start_date %></td>
+        <td><%= search.end_date %></td>
+        <td><%= search.results.count %></td>
+        <td><%= link_to 'Show', search %></td>
+        <!-- <td><%= link_to 'Edit', edit_search_path(search) %></td> -->
+        <td><%= link_to 'Destroy', search, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
