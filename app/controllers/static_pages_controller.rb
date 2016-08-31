@@ -3,6 +3,7 @@ class StaticPagesController < ApplicationController
   end
 
   def search
+    @title = 'test'
     @search = Search.new
   end
 end
