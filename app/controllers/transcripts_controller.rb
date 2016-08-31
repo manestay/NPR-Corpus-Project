@@ -1,5 +1,6 @@
 class TranscriptsController < ApplicationController
-  before_action :set_transcript, only: [:show, :edit, :update, :destroy]
+  include TranscriptsHelper
+  before_action :set_transcript, only: [:show, :edit, :update, :destroy, :download]
 
   # GET /transcripts
   # GET /transcripts.json
@@ -51,6 +52,16 @@ class TranscriptsController < ApplicationController
     end
   end
 
+  def download
+    data = generate_xml(@transcript)
+    send_data(
+      data,
+      filename: "#{@transcript.title}.csv",
+      type: 'text/xml',
+      disposition: 'inline'
+    )
+  end
+
   # DELETE /transcripts/1
   # DELETE /transcripts/1.json
   def destroy
@@ -62,13 +73,14 @@ class TranscriptsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_transcript
-      @transcript = Transcript.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def transcript_params
-      params.require(:transcript).permit(:title, :date, :story_link, :audio_link, :text)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_transcript
+    @transcript = Transcript.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def transcript_params
+    params.require(:transcript).permit(:title, :date, :story_link, :audio_link, :text)
+  end
 end

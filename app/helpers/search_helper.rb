@@ -44,4 +44,9 @@ module SearchHelper
   rescue StandardError => ex
     puts "There was an error: #{ex}"
   end
+
+  def get_transcript_id(result)
+    return result.transcript_id if result.transcript_id
+    Transcript.where(title: result.title).first.id
+  end
 end
