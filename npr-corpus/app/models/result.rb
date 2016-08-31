@@ -1,5 +1,6 @@
 class Result
   include Mongoid::Document
+  field :transcript_id, type: String
   field :title, type: String
   field :url_link, type: String
   field :audio_link, type: String

@@ -48,7 +48,7 @@ class SearchesController < ApplicationController
     phrase = search.phrase
     time = search.submitted_at
     file_location = generate_csv(search.results, phrase, time)
-    send_file(file_location, target: '_blank', type: 'text/csv', disposition: 'attachment')
+    send_file(file_location, type: 'text/csv', disposition: 'attachment')
   end
 
   private

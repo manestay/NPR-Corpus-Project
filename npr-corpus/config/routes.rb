@@ -1,9 +1,11 @@
 Rails.application.routes.draw do
   devise_for :users
   resources :users
-  resources :transcripts
   resources :searches
+  resources :transcripts
+
   get 'history', to: 'searches#index'
+  get 'download_transcript', to: 'transcripts#download'
   get 'download_search', to: 'searches#download'
   get 'static_pages/home'
   get 'static_pages/index'

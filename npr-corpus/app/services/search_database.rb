@@ -35,7 +35,8 @@ class SearchDatabase
           paragraph: hit_info[1],
           follow1: hit_info[2],
           follow2: hit_info[3],
-          sentence: hit_info[4]
+          sentence: hit_info[4],
+          transcript_id: transcript.id # note: Mongoid ID, not NPR ID
         )
 
         hit_array << hit
