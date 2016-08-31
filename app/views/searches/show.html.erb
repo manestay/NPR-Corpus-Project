@@ -5,10 +5,10 @@
 
 <% if @limited %>
   <%= "Showing the first 50 results;" %>
-  <%= link_to "download CSV", download_search_path(id: @search.id) %>
+  <%= link_to "download CSV", download_search_path(id: @search.id), 'data-turbolinks' => false %>
   <%= "for all results." %>
 <% else %>
-  <%= link_to "Download CSV", download_search_path(id: @search.id) %>
+  <%= link_to "Download CSV", download_search_path(id: @search.id), 'data-turbolinks' => false %>
 <% end %>
 
 <table class='table table-striped table table-condensed'>
@@ -28,7 +28,7 @@
         <td>
           <%= link_to 'Story', result.url_link, target: '_blank' %>|
           <%= link_to 'MP3', result.audio_link, target: '_blank'%>|
-          <%= link_to 'XML', download_transcript_path(id: get_transcript_id(result)) %>
+          <%= link_to 'XML', download_transcript_path(id: get_transcript_id(result)), 'data-turbolinks' => false %>
         </td>
       </tr>
     <% end %>
