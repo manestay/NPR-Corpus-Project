@@ -1,4 +1,6 @@
 class SearchesController < ApplicationController
+  include SearchHelper
+
   def new
     @search = Search.new
   end
@@ -26,13 +28,23 @@ class SearchesController < ApplicationController
 
   def show
     @search = Search.where(id: params[:id]).first
+    return unless @search
     @results =
       if @search.results.count <= 50
         @search.results
       else
-        @search.results.limit(50)
         @limited = true
+        @search.results.limit(50)
       end
+  end
+
+  def download
+    search = Search.where(id: params[:id]).first
+    phrase = search.phrase
+    results = search.results
+    time = search.submitted_at
+    file_location = generate_csv(results, phrase, time)
+    send_file(file_location, target: '_blank', type: 'text/csv', disposition: 'attachment')
   end
 
   private

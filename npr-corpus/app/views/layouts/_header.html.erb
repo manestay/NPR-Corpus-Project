@@ -3,7 +3,7 @@
     <%= link_to "NPR Corpus", root_path, id: "logo" %>
     <nav>
         <% if user_signed_in? %>
-          <p class="navbar-text pull-left"></p>Logged in as <strong><%= current_user.email %></strong>.</p>
+          <p class="navbar-text"></p>Logged in as <strong><%= current_user.email %></strong>.</p>
         <% end %>
       <ul class="nav navbar-nav navbar-right">
         <li><%= link_to "Home", root_path, :class => 'navbar-link' %></li>
