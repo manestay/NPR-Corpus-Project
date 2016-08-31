@@ -1,12 +1,18 @@
+<% provide(:title, "#{@search.phrase}") %>
+
 <%= "Found #{@search.results.count} hits for the phrase \"#{@search.phrase}\" in
  #{@search.transcript_count} transcripts." %> <br>
 
-<%= "Showing first 50 results; download CSV for all results" if @limited %>
+<% if @limited %>
+  <%= "Showing first 50 results." %>
+  <%= link_to "download CSV", download_search_path(id: @search.id) %>
+  <%= "for all results." %>
+<% else %>
+  <%= link_to "Download CSV", download_search_path(id: @search.id) %>
+<% end %>
+
 <%= table_for @results, :html => {
   :class => 'table table-bordered table-striped table table-condensed',
   } do -%>
-  <% columns :title, :url_link, :audio_link, :context, :paragraph, :follow1,
-             :follow2, :sentence %>
+  <% columns :title, :url_link, :audio_link, :paragraph %>
 <% end %>
-
-<%= link_to "Download_csv", "/save/results-#{@search.phrase}-#{@search.submitted_at.to_date}.csv" %>

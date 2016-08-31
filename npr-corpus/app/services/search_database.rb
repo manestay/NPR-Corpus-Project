@@ -49,53 +49,6 @@ class SearchDatabase
     hit_array
   end
 
-  def generate_csv(array, file_name: nil)
-    # strip metadata from array and set phrase
-    phrase_hash, *result_array = array
-    phrase = phrase_hash[:phrase]
-
-    file_name ||= "results-#{phrase}-#{Date.current}.csv"
-
-    dir = ENV['CSV_FOLDER']
-    if current_user # user is looged in
-      dir += "/#{current_user.email}"
-      FileUtils.mkdir_p(dir) unless File.directory?(dir)
-    end
-
-    CSV.open("#{dir}/#{file_name}", 'wb') do |csv|
-      csv << [ # header
-        'Number',
-        'Title',
-        'Trans link',
-        'Audio link',
-        'Context',
-        'Paragraph',
-        'Continuation',
-        'Continuation2',
-        'Sentence',
-        "phrase: #{phrase}"
-      ]
-
-      result_array.each.with_index(1) do |result, i|
-        hit = [
-          i,
-          result.title,
-          result.url_link,
-          result.audio_link,
-          result.context,
-          paragraph,
-          result.follow1,
-          result.follow2,
-          result.sentence
-        ]
-
-        csv << hit
-      end
-    end
-  rescue StandardError => ex
-    puts "There was an error: #{ex}"
-  end
-
   private
 
   # return context, follow1, follow2, sentence in an array
