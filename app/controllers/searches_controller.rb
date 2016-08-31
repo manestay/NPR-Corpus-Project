@@ -1,6 +1,11 @@
 class SearchesController < ApplicationController
   include SearchHelper
 
+  def index
+    return unless current_user
+    @searches = current_user.searches
+  end
+
   def new
     @search = Search.new
   end
@@ -41,9 +46,8 @@ class SearchesController < ApplicationController
   def download
     search = Search.where(id: params[:id]).first
     phrase = search.phrase
-    results = search.results
     time = search.submitted_at
-    file_location = generate_csv(results, phrase, time)
+    file_location = generate_csv(search.results, phrase, time)
     send_file(file_location, target: '_blank', type: 'text/csv', disposition: 'attachment')
   end
 

@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   resources :users
   resources :transcripts
   resources :searches
+  get 'history', to: 'searches#index'
   get 'download_search', to: 'searches#download'
   get 'static_pages/home'
   get 'static_pages/index'

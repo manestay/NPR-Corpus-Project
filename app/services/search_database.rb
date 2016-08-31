@@ -16,7 +16,7 @@ class SearchDatabase
 
       paragraphs.each_with_index do |paragraph, i|
         next unless paragraph # if blank paragraph
-        next unless phrase.in? paragraph.downcase # if phrase not found
+        next unless phrase.in? paragraph.downcase.split(/[^\w']+/) # if phrase not found
 
         hit_info = get_hit_info(phrase, paragraph, paragraphs, i)
 
