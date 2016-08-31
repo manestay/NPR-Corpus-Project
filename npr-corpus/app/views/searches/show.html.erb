@@ -4,7 +4,7 @@
  #{@search.transcript_count} transcripts." %> <br>
 
 <% if @limited %>
-  <%= "Showing first 50 results." %>
+  <%= "Showing the first 50 results;" %>
   <%= link_to "download CSV", download_search_path(id: @search.id) %>
   <%= "for all results." %>
 <% else %>
