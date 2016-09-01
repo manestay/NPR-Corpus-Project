@@ -8,7 +8,8 @@ class SearchDatabase
     puts 'training tokenizer...' unless tokenizer
   end
 
-  def search(phrase, transcripts: Transcript.all, limit: nil, whole_word: false)
+  # use_rows option will return an array of rows, instead of results
+  def search(phrase, transcripts: Transcript.all, limit: nil, use_rows: false)
     hit_array = [{ phrase: phrase }] # save phrase in array
     transcripts.each do |transcript|
       paragraphs = transcript.paragraphs
@@ -18,31 +19,23 @@ class SearchDatabase
         next unless paragraph # if blank paragraph
         next unless phrase.in? paragraph.downcase.split(/[^\w']+/) # if phrase not found
 
-        hit_info = get_hit_info(phrase, paragraph, paragraphs, i)
+        hit_info =
+          case use_rows
+          when true
+            get_hit_info(phrase, paragraph, paragraphs, i)
+          when false
+            get_sentence(phrase, paragraph)
+          end
 
-        # do not write if there was an error
-        if hit_info.include? nil
-          Rails.logger.error("#search error: story_id #{transcript.id} " \
-          "paragraph ##{i}, phrase #{phrase}")
-          next
-        end
-
-        hit = Result.new(
-          title: transcript.title,
-          url_link: transcript.url_link,
-          audio_link: transcript.audio_link,
-          context: hit_info[0],
-          paragraph: hit_info[1],
-          follow1: hit_info[2],
-          follow2: hit_info[3],
-          sentence: hit_info[4],
-          transcript_id: transcript.id # note: Mongoid ID, not NPR ID
-        )
+        hit = set_hit(transcript, hit_info, i, use_rows)
 
         hit_array << hit
 
-        puts "#{hit_array.size - 1}. #{transcript.title}
-        #{sentence}" if @verbose
+        if @verbose
+          sentence = use_rows ? hit_info.last : hit_info
+          puts "#{hit_array.size - 1}. #{transcript.title}
+          #{sentence}"
+        end
 
         return hit_array if limit && hit_array.size - 1 == limit
       end
@@ -50,14 +43,39 @@ class SearchDatabase
     hit_array
   end
 
+  def search_plain(phrase, transcripts: Transcript.all, limit: nil)
+    search(phrase, transcripts, limit, use_rows: true)
+  end
+
   private
 
-  # return context, follow1, follow2, sentence in an array
+  def set_hit(transcript, hit_info, i, use_rows)
+    return Result.new(
+      paragraph_index: i,
+      sentence: hit_info,
+      transcript: transcript
+    ) unless use_rows # return a Result object
+
+    [
+      i,
+      transcript.title,
+      transcript.url_link,
+      transcript.audio_link,
+      hit_info[0],
+      hit_info[1],
+      hit_info[2],
+      hit_info[3],
+      hit_info[4]
+    ]
+  end
+
   def get_hit_info(phrase, paragraph, paragraphs, i)
     context = get_context(phrase, paragraphs, i)
     follow1 = get_follow1(phrase, paragraphs, i)
     follow2 = get_follow2(phrase, paragraphs, i)
     sentence = get_sentence(phrase, paragraph)
+    # do not write if there was an error
+
     [context, paragraph, follow1, follow2, sentence]
   end
 

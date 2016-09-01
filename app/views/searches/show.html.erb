@@ -22,12 +22,13 @@
 
   <tbody>
     <% @results.each do |result| %>
+      <% transcript = result.transcript %>
       <tr>
-        <td><%= result.title %></td>
+        <td><%= transcript.title %></td>
         <td><%= result.paragraph %></td>
         <td>
-          <%= link_to 'Story', result.url_link, target: '_blank' %>|
-          <%= link_to 'MP3', result.audio_link, target: '_blank'%>|
+          <%= link_to 'Story', transcript.url_link, target: '_blank' %>|
+          <%= link_to 'MP3', transcript.audio_link, target: '_blank'%>|
           <%= link_to 'XML', download_transcript_path(id: get_transcript_id(result)), 'data-turbolinks' => false %>
         </td>
       </tr>
