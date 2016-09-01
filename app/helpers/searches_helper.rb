@@ -48,6 +48,24 @@ module SearchesHelper
     puts "There was an error: #{ex}"
   end
 
+
+  # index is relative to the phrase itself, negative is left, positive is right
+  def kwic_sort(phrase, results, index)
+    results.sort_by do |result|
+      parts = result.sentence.downcase.partition(phrase)
+      if index < 0
+        part = parts.first
+      elsif index > 0
+        part = parts.last
+        index -= 1
+      else # error
+        next
+      end
+
+      part.split(/[^\w']+/)[index]
+    end
+  end
+
   def get_transcript_id(result)
     return result.transcript_id if result.transcript_id
     Transcript.where(title: result.title).first.id

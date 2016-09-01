@@ -1,6 +1,7 @@
-<% provide(:title, "#{@search.phrase}") %>
+<% phrase = @search.phrase %>
+<% provide(:title, "#{phrase}") %>
 
-<%= "Found #{@search.results.count} hits for the phrase \"#{@search.phrase}\" in
+<%= "Found #{@search.results.count} hits for the phrase \"#{phrase}\" in
  #{@search.transcript_count} transcripts." %> <br>
 
 <%= link_to "Download CSV", download_search_path(id: @search.id), 'data-turbolinks' => false %><br>
@@ -10,7 +11,7 @@
     <tr>
       <th>Title</th>
       <th>Date</th>
-      <th>Paragraph</th>
+      <th>Sentence</th>
       <th>Links</th>
     </tr>
   </thead>
@@ -21,7 +22,7 @@
       <tr>
         <td><%= transcript.title %></td>
         <td><%= transcript.date.strftime('%F') %></td>
-        <td><%= result.paragraph %></td>
+        <td><%= highlight(result.sentence, phrase) %></td>
         <td>
           <%= link_to 'Story', transcript.url_link, target: '_blank' %>|
           <%= link_to 'MP3', transcript.audio_link, target: '_blank'%>|

@@ -9,8 +9,16 @@ class SearchDatabase
   end
 
   # use_rows option will return an array of rows, instead of results
-  def search(phrase, transcripts: Transcript.all, limit: nil, use_rows: false, use_regex: false)
-    hit_array = [{ phrase: phrase }] # save phrase in array
+  def search(
+    phrase,
+    transcripts: Transcript.all,
+    limit: nil,
+    use_rows: false,
+    use_regex: false,
+    sort_by: 'chrono'
+  )
+    hit_array = []
+    hit_array << { phrase: phrase } if use_rows # save phrase in array
     phrase.downcase!
 
     transcripts.each do |transcript|
@@ -19,6 +27,8 @@ class SearchDatabase
 
       paragraphs.each_with_index do |paragraph, i|
         next unless paragraph # if blank paragraph
+
+        phrase = /#{Regexp.quote(phrase)}/ if use_regex
 
         # whole word : regex search
         text = use_regex ? paragraph.downcase : paragraph.downcase.split(/[^\w']+/)
@@ -46,11 +56,29 @@ class SearchDatabase
         return hit_array if limit && hit_array.size - 1 == limit
       end
     end
-    hit_array
+
+    hit_array =
+      if sort_by == 'kwicl'
+        kwic_sort(phrase, hit_array, -1)
+      elsif sort_by == 'kwicr'
+        kwic_sort(phrase, hit_array, 1)
+      else
+        hit_array
+      end
   end
 
-  def search_plain(phrase, transcripts: Transcript.all, limit: nil)
-    search(phrase, transcripts, limit, use_rows: true)
+  # index is relative to the phrase itself, negative is left, positive is right
+  def kwic_sort(phrase, results, index)
+    index -= 1 if index > 0
+
+    results.sort_by do |result|
+
+      parts = result.sentence.downcase.partition(phrase)
+
+      part = index < 0 ? parts.first : parts.last
+
+      part.strip.split(/[^\w']+/)[index] || 'z'
+    end
   end
 
   private

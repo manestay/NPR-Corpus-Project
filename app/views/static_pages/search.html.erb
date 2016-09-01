@@ -1,5 +1,5 @@
-<% provide(:title, "New Search") %>
-<h2>New Search</h2>
+<% provide(:title, "New search") %>
+<h2>New search</h2>
 
 <%= bootstrap_form_for @search do |f| %>
   <%= f.text_field :phrase, autofocus: true %></p>
@@ -11,6 +11,12 @@
   <%= f.date_field :end_date %></p>
 
   <%= f.hidden_field :submitted_at, value: DateTime.current %></p>
+
+  <%= f.form_group :sort_by, label: { text: "Sort by" } do %>
+    <%= f.radio_button :sort_by, 'chrono', label: "Chronological", inline: true %>
+    <%= f.radio_button :sort_by, 'kwicl', label: "KWIC left", inline: true %>
+    <%= f.radio_button :sort_by, 'kwicr', label: "KWIC right", inline: true %>
+  <% end %>
 
   <%= f.form_group do %>
   <%= f.check_box :regex do %>

@@ -27,8 +27,9 @@ class SearchesController < ApplicationController
       @search.phrase,
       transcripts: @transcripts,
       limit: @search.limit,
-      use_regex: @search.regex
-    ).drop(1) # drop data on phrase
+      use_regex: @search.regex,
+      sort_by: @search.sort_by
+    )
 
     save_search(@transcripts.count)
 
@@ -36,7 +37,7 @@ class SearchesController < ApplicationController
   end
 
   def show
-    @results = @search.results.order_by(:date.desc).page(params[:page])
+    @results = @search.results.page(params[:page])
   end
 
   def download
@@ -79,7 +80,8 @@ class SearchesController < ApplicationController
       :start_date,
       :end_date,
       :submitted_at,
-      :regex
+      :regex,
+      :sort_by
     )
   end
 end
