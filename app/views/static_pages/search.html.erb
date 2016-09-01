@@ -2,7 +2,7 @@
 <h2>New Search</h2>
 
 <%= bootstrap_form_for @search do |f| %>
-  <%= f.text_field :phrase %></p>
+  <%= f.text_field :phrase, autofocus: true %></p>
 
   <%= f.text_field :limit %></p>
 
@@ -12,5 +12,11 @@
 
   <%= f.hidden_field :submitted_at, value: DateTime.current %></p>
 
+  <%= f.form_group do %>
+  <%= f.check_box :regex do %>
+    Use regex (for searching phrases)
+  <% end %>
+
   <%= f.submit "Search" %>
+<% end %>
 <% end %>

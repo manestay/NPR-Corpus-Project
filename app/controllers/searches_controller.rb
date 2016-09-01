@@ -24,7 +24,8 @@ class SearchesController < ApplicationController
     @hits = searcher.search(
       @search.phrase,
       transcripts: @transcripts,
-      limit: @search.limit
+      limit: @search.limit,
+      use_regex: @search.regex
     ).drop(1) # drop data on phrase
 
     save_search(@transcripts.count)
@@ -80,7 +81,8 @@ class SearchesController < ApplicationController
       :limit,
       :start_date,
       :end_date,
-      :submitted_at
+      :submitted_at,
+      :regex
     )
   end
 end

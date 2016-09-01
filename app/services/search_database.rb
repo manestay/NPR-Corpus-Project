@@ -9,15 +9,21 @@ class SearchDatabase
   end
 
   # use_rows option will return an array of rows, instead of results
-  def search(phrase, transcripts: Transcript.all, limit: nil, use_rows: false)
+  def search(phrase, transcripts: Transcript.all, limit: nil, use_rows: false, use_regex: false)
     hit_array = [{ phrase: phrase }] # save phrase in array
+    phrase.downcase!
+
     transcripts.each do |transcript|
       paragraphs = transcript.paragraphs
       next unless paragraphs # if no paragraphs
 
       paragraphs.each_with_index do |paragraph, i|
         next unless paragraph # if blank paragraph
-        next unless phrase.in? paragraph.downcase.split(/[^\w']+/) # if phrase not found
+
+        # whole word : regex search
+        text = use_regex ? paragraph.downcase : paragraph.downcase.split(/[^\w']+/)
+
+        next unless phrase.in? text # if phrase not found
 
         hit_info =
           case use_rows

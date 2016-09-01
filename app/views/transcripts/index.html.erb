@@ -2,14 +2,13 @@
 
 <h1>Listing Transcripts</h1>
 
-<table>
+<table class='table table-striped'>
   <thead>
     <tr>
       <th>Title</th>
+      <th>Story ID</th>
       <th>Date</th>
-      <th>Story link</th>
-      <th>Audio link</th>
-      <th>Text</th>
+      <th>Links</th>
       <th colspan="3"></th>
     </tr>
   </thead>
@@ -18,18 +17,14 @@
     <% @transcripts.each do |transcript| %>
       <tr>
         <td><%= transcript.title %></td>
-        <td><%= transcript.date %></td>
-        <td><%= transcript.story_link %></td>
-        <td><%= transcript.audio_link %></td>
-        <td><%= transcript.text %></td>
-        <td><%= link_to 'Show', transcript %></td>
-        <td><%= link_to 'Edit', edit_transcript_path(transcript) %></td>
-        <td><%= link_to 'Destroy', transcript, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= transcript.story_id %></td>
+        <td><%= transcript.date.strftime('%F %R') %></td>
+        <td>
+          <%= link_to 'Story', transcript.url_link, target: '_blank' %> |
+          <%= link_to 'MP3', transcript.audio_link, target: '_blank'%> |
+          <%= link_to 'XML', download_transcript_path(id: transcript.id), 'data-turbolinks' => false %>
+        </td>
       </tr>
     <% end %>
   </tbody>
 </table>
-
-<br>
-
-<%= link_to 'New Transcript', new_transcript_path %>

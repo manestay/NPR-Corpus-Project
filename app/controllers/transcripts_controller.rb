@@ -5,7 +5,10 @@ class TranscriptsController < ApplicationController
   # GET /transcripts
   # GET /transcripts.json
   def index
-    @transcripts = Transcript.all
+    render :file => 'public/404.html',
+           :status => :not_found,
+           :layout => false unless current_user
+    @transcripts = Transcript.limit(10)
   end
 
   # GET /transcripts/1
