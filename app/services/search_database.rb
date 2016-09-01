@@ -28,19 +28,20 @@ class SearchDatabase
       paragraphs.each_with_index do |paragraph, i|
         next unless paragraph # if blank paragraph
 
-        phrase = /#{Regexp.quote(phrase)}/ if use_regex
+        if use_regex
+          found = paragraph.downcase =~ /#{phrase}/
+        else
+          found = phrase.in? paragraph.downcase.split(/[^\w']+/)
+        end
 
-        # whole word : regex search
-        text = use_regex ? paragraph.downcase : paragraph.downcase.split(/[^\w']+/)
-
-        next unless phrase.in? text # if phrase not found
+        next unless found
 
         hit_info =
           case use_rows
           when true
             get_hit_info(phrase, paragraph, paragraphs, i)
           when false
-            get_sentence(phrase, paragraph)
+            get_sentence(phrase, paragraph, use_regex)
           end
 
         hit = set_hit(transcript, hit_info, i, use_rows)
@@ -128,10 +129,14 @@ class SearchDatabase
     paragraphs[i + 2]
   end
 
-  def get_sentence(phrase, paragraph)
+  def get_sentence(phrase, paragraph, use_regex)
     sentences = @m.tokenize_text(paragraph)
     sentences.each do |sentence|
-      return sentence if phrase.in? sentence.downcase
+      if !use_regex
+        return sentence if phrase.in? sentence.downcase
+      else
+        return sentence if sentence.downcase =~ /#{phrase}/
+      end
     end
 
     # if no sentence is returned, return nil
