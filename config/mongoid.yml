@@ -137,7 +137,7 @@ test:
 production:
   clients:
     default:
-      uri: <%= "mongodb://#{ENV['MONGO_USERNAME']}:#{ENV['MONGO_PASSWORD']}@ds043497.mongolab.com:43497/master" %>
+      uri: <%= ENV['MONGODB_URI'] %>
       options:
         # The default consistency is :eventual, which reads from
         # secondaries when possible.
