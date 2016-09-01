@@ -16,11 +16,13 @@ class SearchesController < ApplicationController
 
     current_user.searches << @search if current_user
 
-    searcher = SearchDatabase.new
     @transcripts = Transcript.order_by(:date.desc).where(
       :date.gte => @search.start_date,
       :date.lte => @search.end_date
     )
+
+    searcher = SearchDatabase.new
+
     @hits = searcher.search(
       @search.phrase,
       transcripts: @transcripts,
@@ -48,7 +50,9 @@ class SearchesController < ApplicationController
     @search.results.destroy_all
     @search.destroy
     respond_to do |format|
-      format.html { redirect_to history_path, notice: 'Search was successfully destroyed.' }
+      format.html do
+        redirect_to history_path, notice: 'Search was successfully destroyed.'
+      end
       format.json { head :no_content }
     end
   end

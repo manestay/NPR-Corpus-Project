@@ -3,12 +3,12 @@ module SearchesHelper
     require 'csv'
 
     file_name ||= "results-#{phrase}-#{time.strftime('%F-%H-%M')}.csv"
-    phrase ||= results_array.first.search.phrase rescue nil
+    phrase ||= results_array.first.search.phrase
 
     dir = "#{Rails.root}/#{ENV['CSV_FOLDER']}"
     file_location = "#{dir}/#{file_name}"
 
-    return file_location if File.exists? file_location # csv exists already
+    return file_location if File.exist? file_location # csv exists already
 
     CSV.open(file_location, 'wb') do |csv|
       csv << [ # header
@@ -54,7 +54,7 @@ module SearchesHelper
   end
 
   def get_context(paragraphs, i)
-    return '' if i == 0
+    return '' if i.zero?
     paragraphs[i - 1]
   end
 

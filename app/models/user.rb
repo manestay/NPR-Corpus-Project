@@ -4,7 +4,6 @@ class User
 
   before_save { self.email = email.downcase }
 
-
   field :name, type: String
 
   # Include default devise modules. Others available are:
@@ -13,8 +12,8 @@ class User
          :recoverable, :rememberable, :trackable, :validatable
 
   ## Database authenticatable
-  field :email,              type: String, default: ""
-  field :encrypted_password, type: String, default: ""
+  field :email,              type: String, default: ''
+  field :encrypted_password, type: String, default: ''
 
   ## Recoverable
   field :reset_password_token,   type: String

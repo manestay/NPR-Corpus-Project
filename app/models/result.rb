@@ -7,6 +7,6 @@ class Result
   belongs_to :search
 
   def paragraph
-    self.transcript.paragraphs[paragraph_index]
+    transcript.paragraphs[paragraph_index]
   end
 end

@@ -2,9 +2,7 @@ module TranscriptsHelper
   require 'builder'
 
   def generate_xml(transcript, file_name: nil)
-    if file_name
-      file = File.new("#{transcript.title}.xml", 'wb')
-    end
+    file = File.new("#{transcript.title}.xml", 'wb') if file_name
 
     puts 'no transcript' unless transcript
     options = { indent: 2 }

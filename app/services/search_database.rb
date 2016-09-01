@@ -76,26 +76,26 @@ class SearchDatabase
   end
 
   def get_hit_info(phrase, paragraph, paragraphs, i)
-    context = get_context(phrase, paragraphs, i)
-    follow1 = get_follow1(phrase, paragraphs, i)
-    follow2 = get_follow2(phrase, paragraphs, i)
+    context = get_context(paragraphs, i)
+    follow1 = get_follow1(paragraphs, i)
+    follow2 = get_follow2(paragraphs, i)
     sentence = get_sentence(phrase, paragraph)
     # do not write if there was an error
 
     [context, paragraph, follow1, follow2, sentence]
   end
 
-  def get_context(phrase, paragraphs, i)
-    return '' if i == 0
+  def get_context(paragraphs, i)
+    return '' if i.zero?
     paragraphs[i - 1]
   end
 
-  def get_follow1(phrase, paragraphs, i)
+  def get_follow1(paragraphs, i)
     return '' if i + 1 == paragraphs.size
     paragraphs[i + 1]
   end
 
-  def get_follow2(phrase, paragraphs, i)
+  def get_follow2(paragraphs, i)
     return '' if [i + 1, i + 2].include? paragraphs.size
     paragraphs[i + 2]
   end

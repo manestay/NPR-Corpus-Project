@@ -1,13 +1,14 @@
 class TranscriptsController < ApplicationController
   include TranscriptsHelper
-  before_action :set_transcript, only: [:show, :edit, :update, :destroy, :download]
+  before_action :set_transcript,
+                only: [:show, :edit, :update, :destroy, :download]
 
   # GET /transcripts
   # GET /transcripts.json
   def index
-    render :file => 'public/404.html',
-           :status => :not_found,
-           :layout => false unless current_user
+    render file: 'public/404.html',
+           status: :not_found,
+           layout: false unless current_user
     @transcripts = Transcript.order_by(:date.desc).page(params[:page])
   end
 
@@ -32,11 +33,15 @@ class TranscriptsController < ApplicationController
 
     respond_to do |format|
       if @transcript.save
-        format.html { redirect_to @transcript, notice: 'Transcript was successfully created.' }
+        format.html do
+          redirect_to @transcript, notice: 'Transcript was successfully created.'
+        end
         format.json { render :show, status: :created, location: @transcript }
       else
         format.html { render :new }
-        format.json { render json: @transcript.errors, status: :unprocessable_entity }
+        format.json do
+          render json: @transcript.errors, status: :unprocessable_entity
+        end
       end
     end
   end
@@ -46,11 +51,15 @@ class TranscriptsController < ApplicationController
   def update
     respond_to do |format|
       if @transcript.update(transcript_params)
-        format.html { redirect_to @transcript, notice: 'Transcript was successfully updated.' }
+        format.html do
+          redirect_to @transcript, notice: 'Transcript was successfully updated.'
+        end
         format.json { render :show, status: :ok, location: @transcript }
       else
         format.html { render :edit }
-        format.json { render json: @transcript.errors, status: :unprocessable_entity }
+        format.json do
+          render json: @transcript.errors, status: :unprocessable_entity
+        end
       end
     end
   end
@@ -70,7 +79,9 @@ class TranscriptsController < ApplicationController
   def destroy
     @transcript.destroy
     respond_to do |format|
-      format.html { redirect_to transcripts_url, notice: 'Transcript was successfully destroyed.' }
+      format.html do
+        redirect_to transcripts_url, notice: 'Transcript was successfully destroyed.'
+      end
       format.json { head :no_content }
     end
   end
@@ -84,6 +95,7 @@ class TranscriptsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def transcript_params
-    params.require(:transcript).permit(:title, :date, :story_link, :audio_link, :text)
+    params.require(:transcript)
+          .permit(:title, :date, :story_link, :audio_link, :text)
   end
 end
