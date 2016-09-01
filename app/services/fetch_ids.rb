@@ -31,13 +31,12 @@ class FetchIds
           skip = 0
           puts "finished #{@date_index.to_date}"
           @date_index += 1.day
-          sleep(1)
         end
       rescue NPR::APIError
-        Rails.logger.error("There was an API error for #{date_index}\n")
+        Rails.logger.error("There was an API error for #{@date_index}\n")
         @date_index += 1.day
       rescue NoMethodError
-        Rails.logger.error("There was a no method error for #{date_index}\n")
+        Rails.logger.error("There was a no method error for #{@date_index}\n")
         @date_index += 1.day
       end
     end
