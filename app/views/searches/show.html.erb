@@ -15,6 +15,7 @@
   <thead>
     <tr>
       <th>Title</th>
+      <th>Date</th>
       <th>Paragraph</th>
       <th>Links</th>
     </tr>
@@ -25,6 +26,7 @@
       <% transcript = result.transcript %>
       <tr>
         <td><%= transcript.title %></td>
+        <td><%= transcript.date.strftime('%F') %></td>
         <td><%= result.paragraph %></td>
         <td>
           <%= link_to 'Story', transcript.url_link, target: '_blank' %>|

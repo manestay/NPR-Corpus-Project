@@ -44,9 +44,9 @@ class SearchesController < ApplicationController
   end
 
   def download
-    phrase = search.phrase
-    time = search.submitted_at
-    file_location = generate_csv(search.results, phrase, time)
+    phrase = @search.phrase
+    time = @search.submitted_at
+    file_location = generate_csv(@search.results, phrase, time)
     send_file(file_location, type: 'text/csv', disposition: 'attachment')
   end
 
