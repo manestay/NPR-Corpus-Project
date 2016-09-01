@@ -1,6 +1,5 @@
 source 'https://rubygems.org'
 
-
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.6'
 # Use SCSS for stylesheets
@@ -33,6 +32,8 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
+
+  gem 'dotenv-rails'
 end
 
 group :development do
@@ -53,12 +54,10 @@ gem 'npr'
 
 gem 'mongoid', '~> 5.1.0'
 
-gem 'dotenv-rails'
-
 gem 'tactful_tokenizer'
 
 gem 'devise'
 
-gem 'table_for_collection'
-
 gem 'bootstrap_form'
+
+gem 'kaminari'

@@ -34,14 +34,7 @@ class SearchesController < ApplicationController
   end
 
   def show
-    return unless @search
-    @results =
-      if @search.results.count <= 50
-        @search.results
-      else
-        @limited = true
-        @search.results.limit(50)
-      end
+    @results = @search.results.order_by(:date.desc).page(params[:page])
   end
 
   def download

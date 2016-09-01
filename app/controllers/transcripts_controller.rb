@@ -8,7 +8,7 @@ class TranscriptsController < ApplicationController
     render :file => 'public/404.html',
            :status => :not_found,
            :layout => false unless current_user
-    @transcripts = Transcript.limit(10)
+    @transcripts = Transcript.order_by(:date.desc).page(params[:page])
   end
 
   # GET /transcripts/1

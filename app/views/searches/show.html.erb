@@ -3,13 +3,7 @@
 <%= "Found #{@search.results.count} hits for the phrase \"#{@search.phrase}\" in
  #{@search.transcript_count} transcripts." %> <br>
 
-<% if @limited %>
-  <%= "Showing the first 50 results;" %>
-  <%= link_to "download CSV", download_search_path(id: @search.id), 'data-turbolinks' => false %>
-  <%= "for all results." %>
-<% else %>
-  <%= link_to "Download CSV", download_search_path(id: @search.id), 'data-turbolinks' => false %>
-<% end %>
+<%= link_to "Download CSV", download_search_path(id: @search.id), 'data-turbolinks' => false %><br>
 
 <table class='table table-striped table table-condensed'>
   <thead>
@@ -36,4 +30,5 @@
       </tr>
     <% end %>
   </tbody>
+  <%= paginate @results %>
 </table>

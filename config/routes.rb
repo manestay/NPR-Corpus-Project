@@ -7,9 +7,11 @@ Rails.application.routes.draw do
   get 'history', to: 'searches#index'
   get 'download_transcript', to: 'transcripts#download'
   get 'download_search', to: 'searches#download'
-  get 'static_pages/home'
-  get 'static_pages/index'
+
   get 'query', to: 'static_pages#search'
+  get 'about', to: 'static_pages#about'
+  get 'home', to: 'static_pages#home'
+
   root to: 'static_pages#home'
 
   # The priority is based upon order of creation: first created -> highest priority.
