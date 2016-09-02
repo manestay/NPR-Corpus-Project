@@ -78,7 +78,7 @@ class SearchDatabase
 
       part = index < 0 ? parts.first : parts.last
 
-      part.strip.split(/[^\w']+/)[index] || 'z'
+      part.strip.split(/[^[[:word:]]]+/)[index] || 'z'
     end
   end
 
