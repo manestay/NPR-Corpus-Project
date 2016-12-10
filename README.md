@@ -53,7 +53,9 @@ id_add =  IdsToDb.new(@client)
 id_add.parse_file('import2016.txt')
 id_add.write_ids
 ```
-After running the last command, you'll see the stories being added in the console.
+After running the last command, you'll see the stories being added in the console. If you refresh your localhost:3000, you will see that the articles have been added.
+
+MORE TO COME...
 ##Links
 http://www.linguistics.ucla.edu/people/harris/lab/lab.html
 
